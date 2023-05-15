@@ -64,6 +64,16 @@ def convert_txt_to_dict(nom_fichier):
             dico[Vtitre]["producers"] = Vproducteur
             dico[Vtitre]["companies"] = Vcompanies
             dico[Vtitre]["year"] = annee_sorti  
+    return dico
             
 # convert_txt_to_dict("./little_data.txt")
-convert_txt_to_dict("./data.txt")
+# convert_txt_to_dict("./data.txt")
+
+def colab_en_commun(dico,acteur1, acteur2):
+    res = set()
+    for film in dico.keys():
+        if acteur1 in film["cast"]:
+            res.add(film["cast"])
+    print(res)
+
+colab_en_commun(convert_txt_to_dict("./little_data.txt"),"Núria Espert","Harrison Ford")
