@@ -92,11 +92,12 @@ def colab_en_commun(dico, acteur1, acteur2):
     for actor_sus in dico_verif_ancien_result:
          if len(dico_verif_ancien_result[actor_sus]) == 2:
             res.add(actor_sus)
+    print(res)
     return res
 
-
+dico_little_data = convert_txt_to_dict("./little_data.txt")
 # Lizaran collabore avec les
-colab_en_commun(convert_txt_to_dict("./little_data.txt"),"Rutger Hauer", "Sean Young")
+colab_en_commun(dico_little_data, "Rutger Hauer", "Sean Young")
 
 #problème utf 8 (NÃºria Espert au lieu de 'NÃºria) envisagez de le faire à la construction du dico
 # import sys
