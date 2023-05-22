@@ -109,12 +109,19 @@ dico_little_data = convert_txt_to_dict("./little_data.txt")
 dico_medium_data = convert_txt_to_dict("./medium_data.txt")
 def creation_graphe(dico):
     g = nx.DiGraph()
+    # ens_deja_vue = set()
+    i = -1
     for valeurs in dico.values():
+        if i != -1:
+            valeurs["cast"].pop(i)
         for elem in valeurs["cast"]:
             for elem1 in valeurs["cast"]:
                 if elem != elem1:
-                    g.add_edge(elem, elem1)
+                    g.add_edge(elem, elem1, length = 10)
+        i+=1
+    print(len(g.nodes))
     nx.draw(g)
     return g
 
 creation_graphe(dico_little_data)
+# %%
