@@ -2,7 +2,7 @@ import json
 
 
 # dico[titre] = cast
-# ou 
+# ou
 # {titre: {cast : le cast, directors : le directeur, producers : producteurs, companies : les companies}}
 
 
@@ -20,18 +20,18 @@ def convert_txt_to_dict(nom_fichier):
         lignes = fichier_open.readlines()
         dico = dict()
         for json_data in lignes:
-            Data =json.loads(json_data)
+            Data = json.loads(json_data)
             titre = Data["title"]
             cast = Data["cast"]
-            try :
+            try:
                 directeur = Data["directors"]
             except:
                 directeur = list()
-            try :
+            try:
                 producteur = Data["producers"]
             except:
                 producteur = list()
-            try :
+            try:
                 companies = Data["companies"]
             except:
                 companies = list()
@@ -44,15 +44,17 @@ def convert_txt_to_dict(nom_fichier):
             if len(cast) > 0:
                 for personne in cast:
                     Vcast.append(personne.replace("[[", "").replace("]]", ""))
-            
+
             Vdirecteur = list()
             if len(directeur) > 0:
                 for director in directeur:
-                    Vdirecteur.append(director.replace("[[", "").replace("]]", ""))
+                    Vdirecteur.append(director.replace(
+                        "[[", "").replace("]]", ""))
             Vproducteur = list()
             if len(producteur) > 0:
                 for prod in producteur:
-                    Vproducteur.append(prod.replace("[[", "").replace("]]", ""))
+                    Vproducteur.append(prod.replace(
+                        "[[", "").replace("]]", ""))
 
             Vcompanies = list()
             if len(companies) > 0:
@@ -63,17 +65,37 @@ def convert_txt_to_dict(nom_fichier):
             dico[Vtitre]["director"] = Vdirecteur
             dico[Vtitre]["producers"] = Vproducteur
             dico[Vtitre]["companies"] = Vcompanies
-            dico[Vtitre]["year"] = annee_sorti  
+            dico[Vtitre]["year"] = annee_sorti
     return dico
-            
-# convert_txt_to_dict("./little_data.txt")
+
+print(convert_txt_to_dict("./little_data.txt"))
 # convert_txt_to_dict("./data.txt")
 
-def colab_en_commun(dico,acteur1, acteur2):
+
+# bool acteur 1
+# bool acteur 2
+# ajout d'un acteur suspect si un bool lui est ajoutée (bool acteur 1 =acteur 1)
+
+# Cette requête consiste à renvoyer, pour deux acteurs/actrices donné.e.s,
+# lʼensemble des acteurs/actrices qui ont collaboré avec ces deux personnes.
+def colab_en_commun(dico, acteur1, acteur2):
     res = set()
-    for film in dico.keys():
-        if acteur1 in film["cast"]:
-            res.add(film["cast"])
+    dico_verif_ancien_result = dict()
+    for valeurs in dico.values():
+        for cast_actor in valeurs["cast"]:
+            if cast_actor != acteur1 and cast_actor != acteur2 not in dico_verif_ancien_result:
+                dico_verif_ancien_result[cast_actor] = []
+            if acteur1 in valeurs["cast"] and cast_actor != acteur1:
+                dico_verif_ancien_result[cast_actor].append(acteur1) 
+            if acteur2 in valeurs["cast"] and cast_actor != acteur2:
+                dico_verif_ancien_result[cast_actor].append(acteur2)
+    # print(dico_verif_ancien_result)
+    for check_number in dico_verif_ancien_result.keys():
+        print(dico_verif_ancien_result[check_number])
+        if len(dico_verif_ancien_result[check_number]) == 2:
+            res.add(dico_verif_ancien_result["check_number"])
     print(res)
 
-colab_en_commun(convert_txt_to_dict("./little_data.txt"),"Núria Espert","Harrison Ford")
+
+# Lizaran collabore avec les
+colab_en_commun(convert_txt_to_dict("./little_data.txt"),"NÃºria Espert", "Rosa Maria SardÃ\xa0") #problème utf 8 (NÃºria Espert au lieu de 'NÃºria)
