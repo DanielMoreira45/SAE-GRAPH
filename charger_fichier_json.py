@@ -89,12 +89,9 @@ def colab_en_commun(dico, acteur1, acteur2):
                 dico_verif_ancien_result[cast_actor].append(acteur1) 
             if acteur2 in valeurs["cast"] and cast_actor != acteur2 and cast_actor != acteur1:
                 dico_verif_ancien_result[cast_actor].append(acteur2)
-    print(dico_verif_ancien_result)
-    print(dico_verif_ancien_result["Harrison Ford"])
     for actor_sus in dico_verif_ancien_result:
          if len(dico_verif_ancien_result[actor_sus]) == 2:
             res.add(actor_sus)
-    print(res)
     return res
 
 
