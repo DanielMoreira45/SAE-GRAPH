@@ -1,10 +1,13 @@
+#%%
+import time
 import json
+#import matplotlib.pyplot as plt
 
 
 # dico[titre] = cast
 # ou
 # {titre: {cast : le cast, directors : le directeur, producers : producteurs, companies : les companies}}
-
+import networkx as nx
 
 def convert_txt_to_dict(nom_fichier):
     """charge un fichier de résultats au DNB donné au format CSV en une liste de résultats
@@ -16,7 +19,7 @@ def convert_txt_to_dict(nom_fichier):
         list: la liste des résultats contenus dans le fichier
     """
 
-    with open(nom_fichier) as fichier_open:
+    with open(nom_fichier, encoding='utf-8') as fichier_open:
         lignes = fichier_open.readlines()
         dico = dict()
         for json_data in lignes:
@@ -72,7 +75,7 @@ def convert_txt_to_dict(nom_fichier):
 # convert_txt_to_dict("./data.txt")
 
 
-# bool acteur 1
+
 # bool acteur 2
 # ajout d'un acteur suspect si un bool lui est ajoutée (bool acteur 1 =acteur 1)
 
@@ -95,10 +98,38 @@ def colab_en_commun(dico, acteur1, acteur2):
     print(res)
     return res
 
-dico_little_data = convert_txt_to_dict("./little_data.txt")
-# Lizaran collabore avec les
-colab_en_commun(dico_little_data, "Rutger Hauer", "Sean Young")
 
-#problème utf 8 (NÃºria Espert au lieu de 'NÃºria) envisagez de le faire à la construction du dico
-# import sys
-# acteur1 = acteur1.encode(sys.stdout.encoding).decode('utf-8')
+dico_little_data = convert_txt_to_dict("./little_data.txt")
+# dico_medium_data = convert_txt_to_dict("./medium_data.txt")
+dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
+
+def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
+    g = nx.DiGraph()
+    acteurs_vue = set()
+    for film in dico.values():
+        for i in range(len(film["cast"])):
+            acteur1 = film["cast"][i]
+            if acteur1 not in acteurs_vue: 
+                g.add_node(acteur1)
+                acteurs_vue.add(acteur1)
+            for b in range(i+1, len(film["cast"])):
+                acteur2 = film["cast"][b]
+                if acteur2 not in acteurs_vue:
+                    g.add_node(acteur2)
+                    acteurs_vue.add(acteur2)
+                g.add_edge(acteur1, acteur2, length=10)
+    nx.draw(g, with_labels=True)
+    return g
+
+
+#temps d'exec
+debut = time.time()  # tps debut
+graphe = creation_graphe(dico_little_data)
+fin = time.time()  # tps fin
+# debut exec
+print(fin - debut)
+
+
+
+
+# %%
