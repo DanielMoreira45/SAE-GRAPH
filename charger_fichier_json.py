@@ -131,5 +131,40 @@ print(fin - debut)
 
 
 
+def collaborateurs_proches(G,u,k): # parcours en largeur
+    """Fonction renvoyant l'ensemble des acteurs à distance au plus k de l'acteur u dans le graphe G. La fonction renvoie None si u est absent du graphe.
+    
+    Parametres:
+        G: le graphe
+        u: le sommet de départ
+        k: la distance depuis u
+    """
+    if u not in G.nodes:
+        print(u,"est un illustre inconnu")
+        return None
+    collaborateurs = set()
+    collaborateurs.add(u)
+    print(collaborateurs)
+    for i in range(k): # on explore les sucesseurs des successeurs et ainsi de suite à un degrès k maximum du noeud u 
+        collaborateurs_directs = set()
+        for c in collaborateurs:
+            for voisin in G.adj[c]:
+                if voisin not in collaborateurs:
+                    collaborateurs_directs.add(voisin)
+        collaborateurs = collaborateurs.union(collaborateurs_directs)
+    return collaborateurs
 
+
+def distance_acteurs(G, u, v, k):
+    res = 0
+    collaborateurs = collaborateurs_proches(G,u,k)
+    if u in G.nodes:
+        if v in collaborateurs:
+            res = k
+        else:
+            k+=1
+        collaborateurs = collaborateurs_proches(G,u,k)
+    return res
+        
+    
 # %%

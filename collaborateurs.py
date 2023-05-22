@@ -30,6 +30,3 @@ def collaborateurs_proches(G,u,k): # parcours en largeur
                     collaborateurs_directs.add(voisin)
         collaborateurs = collaborateurs.union(collaborateurs_directs)
     return collaborateurs
-
-def creation_graphe(dico):
-    g = nx.DiGraph()
