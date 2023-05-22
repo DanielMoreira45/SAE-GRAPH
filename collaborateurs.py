@@ -22,7 +22,7 @@ def collaborateurs_proches(G,u,k): # parcours en largeur
     collaborateurs = set()
     collaborateurs.add(u)
     print(collaborateurs)
-    for i in range(k):
+    for i in range(k): # on explore les sucesseurs des successeurs et ainsi de suite à un degrès k maximum du noeud u 
         collaborateurs_directs = set()
         for c in collaborateurs:
             for voisin in G.adj[c]:
