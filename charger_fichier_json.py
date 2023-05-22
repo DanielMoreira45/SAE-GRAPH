@@ -68,7 +68,7 @@ def convert_txt_to_dict(nom_fichier):
             dico[Vtitre]["year"] = annee_sorti
     return dico
 
-print(convert_txt_to_dict("./little_data.txt"))
+#print(convert_txt_to_dict("./little_data.txt"))
 # convert_txt_to_dict("./data.txt")
 
 
@@ -85,17 +85,22 @@ def colab_en_commun(dico, acteur1, acteur2):
         for cast_actor in valeurs["cast"]:
             if cast_actor != acteur1 and cast_actor != acteur2 not in dico_verif_ancien_result:
                 dico_verif_ancien_result[cast_actor] = []
-            if acteur1 in valeurs["cast"] and cast_actor != acteur1:
+            if acteur1 in valeurs["cast"] and cast_actor != acteur1 and cast_actor != acteur2:
                 dico_verif_ancien_result[cast_actor].append(acteur1) 
-            if acteur2 in valeurs["cast"] and cast_actor != acteur2:
+            if acteur2 in valeurs["cast"] and cast_actor != acteur2 and cast_actor != acteur1:
                 dico_verif_ancien_result[cast_actor].append(acteur2)
-    # print(dico_verif_ancien_result)
-    for check_number in dico_verif_ancien_result.keys():
-        print(dico_verif_ancien_result[check_number])
-        if len(dico_verif_ancien_result[check_number]) == 2:
-            res.add(dico_verif_ancien_result["check_number"])
+    print(dico_verif_ancien_result)
+    print(dico_verif_ancien_result["Harrison Ford"])
+    for actor_sus in dico_verif_ancien_result:
+         if len(dico_verif_ancien_result[actor_sus]) == 2:
+            res.add(actor_sus)
     print(res)
+    return res
 
 
 # Lizaran collabore avec les
-colab_en_commun(convert_txt_to_dict("./little_data.txt"),"NÃºria Espert", "Rosa Maria SardÃ\xa0") #problème utf 8 (NÃºria Espert au lieu de 'NÃºria)
+colab_en_commun(convert_txt_to_dict("./little_data.txt"),"Rutger Hauer", "Sean Young")
+
+#problème utf 8 (NÃºria Espert au lieu de 'NÃºria) envisagez de le faire à la construction du dico
+# import sys
+# acteur1 = acteur1.encode(sys.stdout.encoding).decode('utf-8')
