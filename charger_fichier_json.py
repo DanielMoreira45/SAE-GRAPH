@@ -1,11 +1,14 @@
+#%%
+
 import json
+import matplotlib.pyplot as plt
 
 
 # dico[titre] = cast
 # ou
 # {titre: {cast : le cast, directors : le directeur, producers : producteurs, companies : les companies}}
 
-
+import networkx as nx
 def convert_txt_to_dict(nom_fichier):
     """charge un fichier de résultats au DNB donné au format CSV en une liste de résultats
 
@@ -72,7 +75,7 @@ def convert_txt_to_dict(nom_fichier):
 # convert_txt_to_dict("./data.txt")
 
 
-# bool acteur 1
+
 # bool acteur 2
 # ajout d'un acteur suspect si un bool lui est ajoutée (bool acteur 1 =acteur 1)
 
@@ -95,10 +98,23 @@ def colab_en_commun(dico, acteur1, acteur2):
     print(res)
     return res
 
-dico_little_data = convert_txt_to_dict("./little_data.txt")
 # Lizaran collabore avec les
-colab_en_commun(dico_little_data, "Rutger Hauer", "Sean Young")
+# colab_en_commun(dico_little_data, "Rutger Hauer", "Sean Young")
 
 #problème utf 8 (NÃºria Espert au lieu de 'NÃºria) envisagez de le faire à la construction du dico
 # import sys
 # acteur1 = acteur1.encode(sys.stdout.encoding).decode('utf-8')
+
+dico_little_data = convert_txt_to_dict("./little_data.txt")
+dico_medium_data = convert_txt_to_dict("./medium_data.txt")
+def creation_graphe(dico):
+    g = nx.DiGraph()
+    for valeurs in dico.values():
+        for elem in valeurs["cast"]:
+            for elem1 in valeurs["cast"]:
+                if elem != elem1:
+                    g.add_edge(elem, elem1)
+    nx.draw(g)
+    return g
+
+creation_graphe(dico_little_data)

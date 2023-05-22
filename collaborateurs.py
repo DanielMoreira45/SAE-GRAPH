@@ -8,7 +8,7 @@ IUT d'Orleans BUT1 Informatique 2021-2022
 
 import networkx as nx
 
-def collaborateurs_proches(G,u,k):
+def collaborateurs_proches(G,u,k): # parcours en largeur
     """Fonction renvoyant l'ensemble des acteurs à distance au plus k de l'acteur u dans le graphe G. La fonction renvoie None si u est absent du graphe.
     
     Parametres:
@@ -30,3 +30,6 @@ def collaborateurs_proches(G,u,k):
                     collaborateurs_directs.add(voisin)
         collaborateurs = collaborateurs.union(collaborateurs_directs)
     return collaborateurs
+
+def creation_graphe(dico):
+    g = nx.DiGraph()
