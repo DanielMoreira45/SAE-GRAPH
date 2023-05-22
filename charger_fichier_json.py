@@ -107,6 +107,7 @@ def colab_en_commun(dico, acteur1, acteur2):
 
 dico_little_data = convert_txt_to_dict("./little_data.txt")
 dico_medium_data = convert_txt_to_dict("./medium_data.txt")
+
 def creation_graphe(dico):
     g = nx.DiGraph()
     # ens_deja_vue = set()
@@ -114,6 +115,8 @@ def creation_graphe(dico):
     for valeurs in dico.values():
         if i != -1:
             valeurs["cast"].pop(i)
+        if i==len( valeurs["cast"])-1:
+            i = 0
         for elem in valeurs["cast"]:
             for elem1 in valeurs["cast"]:
                 if elem != elem1:
@@ -123,5 +126,5 @@ def creation_graphe(dico):
     nx.draw(g)
     return g
 
-creation_graphe(dico_little_data)
+creation_graphe(dico_medium_data)
 # %%
