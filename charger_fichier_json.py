@@ -46,6 +46,10 @@ def convert_txt_to_dict(nom_fichier):
             Vcast = list()
             if len(cast) > 0:
                 for personne in cast:
+                    if ("|" in personne):
+                        liste_noms_avec_paran = personne.split("|")
+                        liste_noms_sans_paran = liste_noms_avec_paran[0].split("(")
+                        personne = liste_noms_sans_paran[0]
                     Vcast.append(personne.replace("[[", "").replace("]]", ""))
 
             Vdirecteur = list()
@@ -74,7 +78,7 @@ def convert_txt_to_dict(nom_fichier):
 # print(convert_txt_to_dict("./little_data.txt"))
 # convert_txt_to_dict("./data.txt")
 
-
+print(convert_txt_to_dict("./error.txt"))
 
 # bool acteur 2
 # ajout d'un acteur suspect si un bool lui est ajoutée (bool acteur 1 =acteur 1)
@@ -124,10 +128,10 @@ def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
 
 #temps d'exec
 debut = time.time()  # tps debut
-graphe = creation_graphe(dico_medium_data)
+#graphe = creation_graphe(dico_medium_data)
 fin = time.time()  # tps fin
 # debut exec
-print(fin - debut)
+#print(fin - debut)
 
 
 def calculer_centralite_acteur(Gc, acteur):
