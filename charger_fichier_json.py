@@ -152,7 +152,7 @@ def distance_maximale_entre_acteurs(Gc):
                     distances.append(distance)
                 except nx.NetworkXNoPath:
                     # Si aucun chemin n'existe entre les acteurs, la distance est infinie
-                    distances.append(0)  # Distance 0 pour représenter une distance maximale
+                    distances.append(0)  # Distance 0 pour représenter une distance infinie
     distance_max = max(distances)
     return distance_max
 #print(distance_maximale_entre_acteurs(graphe))
