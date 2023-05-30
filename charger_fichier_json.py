@@ -146,7 +146,6 @@ def collaborateurs_proches(G,u,k): # parcours en largeur
         return None
     collaborateurs = set()
     collaborateurs.add(u)
-    print(collaborateurs)
     for i in range(k): # on explore les sucesseurs des successeurs et ainsi de suite à un degrès k maximum du noeud u 
         collaborateurs_directs = set()
         for c in collaborateurs:
@@ -165,15 +164,32 @@ def distance_acteurs(G, u, v, k):
         else:
             k += 1
             for collaborateur in collaborateurs:
-                k = distance_acteurs(G, collaborateur, v, k)
+                collaborateurs = distance_acteurs(G, collaborateur, v, k)
+            return k
     return k
-# print(collaborateurs_proches(graphe, "Herbert Grönemeyer",1))
+
+
+
+
+def eloignement_max(G):
+    max = 0
+    val = None
+    for acteur1 in G.nodes:
+        for acteur2 in G.nodes:
+            if acteur1!= acteur2:
+                distance = distance_acteurs(G, acteur1, acteur2,0)
+                if val is None or distance > val:
+                    max = distance
+    return max
+print(eloignement_max(graphe))
+
+print(collaborateurs_proches(graphe, "Herbert Grönemeyer",1))
         
 # print(len(collaborateurs_proches(graphe, "Burt Ward", 1)))
 # print(len(collaborateurs_proches(graphe, "Burt Ward", 5)))
 
 
-# print(distance_acteurs(graphe,"Herbert Grönemeyer","Jan Fedder", 0))
+print(distance_acteurs(graphe,"Herbert Grönemeyer","Uwe Ochsenknecht", 0))
 # noeud_proximite = nx.closeness_centrality(graphe)
 # noeud_central = max(noeud_proximite, key=noeud_proximite.get) 
 
