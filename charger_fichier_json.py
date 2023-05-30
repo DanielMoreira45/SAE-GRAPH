@@ -1,7 +1,7 @@
 #%%
 import time
 import json
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 # dico[titre] = cast
@@ -99,9 +99,9 @@ def colab_en_commun(dico, acteur1, acteur2):
     return res
 
 
-dico_little_data = convert_txt_to_dict("./little_data.txt")
-# dico_medium_data = convert_txt_to_dict("./medium_data.txt")
-dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
+# dico_little_data = convert_txt_to_dict("./little_data.txt")
+dico_medium_data = convert_txt_to_dict("./medium_data.txt")
+# dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
 
 def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
     g = nx.DiGraph()
@@ -118,13 +118,15 @@ def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
                     g.add_node(acteur2)
                     acteurs_vue.add(acteur2)
                 g.add_edge(acteur1, acteur2, length=10)
-    nx.draw(g, with_labels=True)
+    pos = nx.spring_layout(g, k=0.3)
+    nx.draw(g, with_labels=True, font_size=2, pos=pos)
+    plt.savefig("graph.svg", format="svg")
     return g
 
 
 #temps d'exec
 debut = time.time()  # tps debut
-graphe = creation_graphe(dico_little_data)
+graphe = creation_graphe(dico_medium_data)
 fin = time.time()  # tps fin
 # debut exec
 print(fin - debut)
@@ -156,15 +158,23 @@ def collaborateurs_proches(G,u,k): # parcours en largeur
 
 
 def distance_acteurs(G, u, v, k):
-    res = 0
-    collaborateurs = collaborateurs_proches(G,u,k)
+    collaborateurs = collaborateurs_proches(G, u, k)
     if u in G.nodes:
         if v in collaborateurs:
-            res = k
+            return k
         else:
-            k+=1
-        collaborateurs = collaborateurs_proches(G,u,k)
-    return res
+            k += 1
+            for collaborateur in collaborateurs:
+                k = distance_acteurs(G, collaborateur, v, k)
+    return k
+# print(collaborateurs_proches(graphe, "Herbert Grönemeyer",1))
         
-    
+# print(len(collaborateurs_proches(graphe, "Burt Ward", 1)))
+# print(len(collaborateurs_proches(graphe, "Burt Ward", 5)))
+
+
+# print(distance_acteurs(graphe,"Herbert Grönemeyer","Jan Fedder", 0))
+# noeud_proximite = nx.closeness_centrality(graphe)
+# noeud_central = max(noeud_proximite, key=noeud_proximite.get) 
+
 # %%
