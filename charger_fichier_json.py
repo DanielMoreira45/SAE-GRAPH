@@ -1,7 +1,7 @@
 #%%
 import time
 import json
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 # dico[titre] = cast
@@ -103,9 +103,15 @@ def colab_en_commun(dico, acteur1, acteur2):
     return res
 
 
+<<<<<<< charger_fichier_json.py
+# dico_little_data = convert_txt_to_dict("./little_data.txt")
+dico_medium_data = convert_txt_to_dict("./medium_data.txt")
+# dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
+=======
 # dico_little_data = convert_txt_to_dict("./little_data.txt")
 dico_medium_data = convert_txt_to_dict("./medium_data.txt")
 dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
+>>>>>>> charger_fichier_json.py
 
 def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
     g = nx.DiGraph()
@@ -122,12 +128,170 @@ def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
                     g.add_node(acteur2)
                     acteurs_vue.add(acteur2)
                 g.add_edge(acteur1, acteur2, length=10)
+<<<<<<< charger_fichier_json.py
+    pos = nx.spring_layout(g, k=0.3)
+    nx.draw(g, with_labels=True, font_size=2, pos=pos)
+    plt.savefig("graph.svg", format="svg")
+=======
     #nx.draw(g, with_labels=True)
+>>>>>>> charger_fichier_json.py
     return g
 
 
 #temps d'exec
 debut = time.time()  # tps debut
+<<<<<<< charger_fichier_json.py
+graphe = creation_graphe(dico_medium_data)
+fin = time.time()  # tps fin
+# debut exec
+print(fin - debut)
+
+
+
+def collaborateurs_proches(G,u,k): # parcours en largeur
+    """Fonction renvoyant l'ensemble des acteurs à distance au plus k de l'acteur u dans le graphe G. La fonction renvoie None si u est absent du graphe.
+    
+    Parametres:
+        G: le graphe
+        u: le sommet de départ
+        k: la distance depuis u
+    """
+    if u not in G.nodes:
+        print(u,"est un illustre inconnu")
+        return None
+    collaborateurs = set()
+    collaborateurs.add(u)
+    for i in range(k): # on explore les sucesseurs des successeurs et ainsi de suite à un degrès k maximum du noeud u 
+        collaborateurs_directs = set()
+        for c in collaborateurs:
+            for voisin in G.adj[c]:
+                if voisin not in collaborateurs:
+                    collaborateurs_directs.add(voisin)
+        collaborateurs = collaborateurs.union(collaborateurs_directs)
+    return collaborateurs
+
+
+def distance_acteurs(G, u, v, k):
+    collaborateurs = collaborateurs_proches(G, u, k)
+    if u in G.nodes:
+        if v in collaborateurs:
+            return k
+        else:
+            k += 1
+            for collaborateur in collaborateurs:
+                collaborateurs = distance_acteurs(G, collaborateur, v, k)
+            return k
+    return k
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def eloignement_max(G):
+    max = 0
+    val = None
+    for acteur1 in G.nodes:
+        for acteur2 in G.nodes:
+            if acteur1!= acteur2:
+                distance = distance_acteurs(G, acteur1, acteur2,0)
+                if val is None or distance > val:
+                    max = distance
+    return max
+print(eloignement_max(graphe))
+
+print(collaborateurs_proches(graphe, "Herbert Grönemeyer",1))
+        
+# print(len(collaborateurs_proches(graphe, "Burt Ward", 1)))
+# print(len(collaborateurs_proches(graphe, "Burt Ward", 5)))
+
+
+print(distance_acteurs(graphe,"Herbert Grönemeyer","Uwe Ochsenknecht", 0))
+# noeud_proximite = nx.closeness_centrality(graphe)
+# noeud_central = max(noeud_proximite, key=noeud_proximite.get) 
+=======
 #graphe = creation_graphe(dico_medium_data)
 fin = time.time()  # tps fin
 # debut exec
@@ -160,5 +324,6 @@ def distance_maximale_entre_acteurs(Gc):
     distance_max = max(distances)
     return distance_max
 #print(distance_maximale_entre_acteurs(graphe))
+>>>>>>> charger_fichier_json.py
 
 # %%
