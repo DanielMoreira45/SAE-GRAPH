@@ -180,8 +180,8 @@ def collaborateurs_proches(G,u,k): # parcours en largeur
         collaborateurs = collaborateurs.union(collaborateurs_directs)
     return collaborateurs
 
-
-def distance_acteurs(G, u, v, k):
+# de manière récursive
+def distance_acteurs_recursif(G, u, v, k):
     collaborateurs = collaborateurs_proches(G, u, k)
     if u in G.nodes:
         if v in collaborateurs:
@@ -189,95 +189,48 @@ def distance_acteurs(G, u, v, k):
         else:
             k += 1
             for collaborateur in collaborateurs:
-                collaborateurs = distance_acteurs(G, collaborateur, v, k)
+                collaborateurs = distance_acteurs_recursif(G, collaborateur, v, k)
             return k
     return k
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# de manière itérative
+def distance_acteurs_iterative(G,u,v):
+    distance = 1
+    trouve = False
+    if u not in G.nodes or v not in G.nodes:
+        return None
+    deja_vu = []
+    collabs = collaborateurs_proches(G,u,distance)
+    while distance <= 6 and not trouve:
+        for acteur in collabs:
+            if acteur not in deja_vu:
+                if acteur == v:
+                    trouve = True
+                deja_vu.append(acteur)
+        distance += 1
+        collabs = collaborateurs_proches(G,u,distance)
+    return distance
+
+def distance(G, u, v):
+    if u not in G.nodes or v not in G.nodes:
+        return None
+    visite = []  # liste des noeuds déjà visités
+    file = [[u]]  # queue des chemins à explorer
+    while file:
+        chemin = file.pop(0)  #premier chemin de la file d'attente
+        noeud_courant = chemin[-1]  #dernier noeud du chemin en cours
+        if noeud_courant not in visite:
+            voisins = G[noeud_courant] 
+            for voisin in voisins:
+                nouveau_chemin = list(chemin)  # copie du chemin en cours
+                nouveau_chemin.append(voisin)  # ajoute le voisin au chemin
+                file.append(nouveau_chemin)  # ajoute le nouveau chemin à la file d'attente
+                if voisin == v:
+                    return len(nouveau_chemin)
+                if len(file) > G.number_of_nodes():
+                    return 0  # dans le cas ou il n'y'a pas de relations entre les 2 acteurs, on ne retourne pas None pour la condition distance > val de la fonction eloignement_max(G)
+        visite.append(noeud_courant)  # le noeud courant est compté comme visité
 
 
 def eloignement_max(G):
@@ -286,19 +239,17 @@ def eloignement_max(G):
     for acteur1 in G.nodes:
         for acteur2 in G.nodes:
             if acteur1!= acteur2:
-                distance = distance_acteurs(G, acteur1, acteur2,0)
+                distance = distance(G, acteur1, acteur2)
                 if val is None or distance > val:
                     max = distance
     return max
-print(eloignement_max(graphe))
 
-print(collaborateurs_proches(graphe, "Herbert Grönemeyer",1))
-        
+# print(eloignement_max(graphe))
+
+#         
 # print(len(collaborateurs_proches(graphe, "Burt Ward", 1)))
 # print(len(collaborateurs_proches(graphe, "Burt Ward", 5)))
 
-
-print(distance_acteurs(graphe,"Herbert Grönemeyer","Uwe Ochsenknecht", 0))
 # noeud_proximite = nx.closeness_centrality(graphe)
 # noeud_central = max(noeud_proximite, key=noeud_proximite.get) 
 #graphe = creation_graphe(dico_medium_data)
@@ -310,7 +261,6 @@ fin = time.time()  # tps fin
 def calculer_centralite_acteur(Gc, acteur):
     centralite = nx.closeness_centrality(Gc, u=acteur)
     return centralite
-
 # print(calculer_centralite_acteur(graphe,"Tommy Lee Jones" ))
 
 def trouver_acteur_plus_central(G):
