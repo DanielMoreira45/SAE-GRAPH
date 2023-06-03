@@ -46,6 +46,10 @@ def convert_txt_to_dict(nom_fichier):
             Vcast = list()
             if len(cast) > 0:
                 for personne in cast:
+                    if ("|" in personne):
+                        liste_noms_avec_paran = personne.split("|")
+                        liste_noms_sans_paran = liste_noms_avec_paran[0].split("(")
+                        personne = liste_noms_sans_paran[0]
                     Vcast.append(personne.replace("[[", "").replace("]]", ""))
 
             Vdirecteur = list()
@@ -71,10 +75,10 @@ def convert_txt_to_dict(nom_fichier):
             dico[Vtitre]["year"] = annee_sorti
     return dico
 
-#print(convert_txt_to_dict("./little_data.txt"))
+# print(convert_txt_to_dict("./little_data.txt"))
 # convert_txt_to_dict("./data.txt")
 
-
+print(convert_txt_to_dict("./error.txt"))
 
 # bool acteur 2
 # ajout d'un acteur suspect si un bool lui est ajoutée (bool acteur 1 =acteur 1)
@@ -99,8 +103,8 @@ def colab_en_commun(dico, acteur1, acteur2):
     return res
 
 
-dico_little_data = convert_txt_to_dict("./little_data.txt")
-# dico_medium_data = convert_txt_to_dict("./medium_data.txt")
+# dico_little_data = convert_txt_to_dict("./little_data.txt")
+dico_medium_data = convert_txt_to_dict("./medium_data.txt")
 dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
 
 def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
@@ -118,18 +122,43 @@ def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
                     g.add_node(acteur2)
                     acteurs_vue.add(acteur2)
                 g.add_edge(acteur1, acteur2, length=10)
-    nx.draw(g, with_labels=True)
+    #nx.draw(g, with_labels=True)
     return g
 
 
 #temps d'exec
 debut = time.time()  # tps debut
-graphe = creation_graphe(dico_little_data)
+#graphe = creation_graphe(dico_medium_data)
 fin = time.time()  # tps fin
 # debut exec
-print(fin - debut)
+#print(fin - debut)
 
 
+def calculer_centralite_acteur(Gc, acteur):
+    centralite = nx.closeness_centrality(Gc, u=acteur)
+    return centralite
 
+# print(calculer_centralite_acteur(graphe,"Tommy Lee Jones" ))
+
+def trouver_acteur_plus_central(G):
+    noeud_proximite = nx.closeness_centrality(G)
+    noeud_central = max(noeud_proximite, key=noeud_proximite.get)
+    return noeud_central
+# print(trouver_acteur_plus_central(graphe))
+
+def distance_maximale_entre_acteurs(Gc):
+    distances = []
+    for acteur1 in Gc.nodes():
+        for acteur2 in Gc.nodes():
+            if acteur1 != acteur2:
+                try:
+                    distance = nx.shortest_path_length(Gc, acteur1, acteur2)
+                    distances.append(distance)
+                except nx.NetworkXNoPath:
+                    # Si aucun chemin n'existe entre les acteurs, la distance est infinie
+                    distances.append(0)  # Distance 0 pour représenter une distance infinie
+    distance_max = max(distances)
+    return distance_max
+#print(distance_maximale_entre_acteurs(graphe))
 
 # %%
