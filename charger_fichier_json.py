@@ -85,6 +85,7 @@ print(convert_txt_to_dict("./error.txt"))
 
 # Cette requête consiste à renvoyer, pour deux acteurs/actrices donné.e.s,
 # lʼensemble des acteurs/actrices qui ont collaboré avec ces deux personnes.
+# sans passer par la création de graphe
 def colab_en_commun(dico, acteur1, acteur2):
     res = set()
     dico_verif_ancien_result = dict()
@@ -103,15 +104,28 @@ def colab_en_commun(dico, acteur1, acteur2):
     return res
 
 
-<<<<<<< charger_fichier_json.py
+
+# en passant par la création de graphe
+
+def colab_en_commun(G, u, v):
+    collab_commun = set()
+    if u not in G.nodes or v not in G.nodes:
+        return None
+    adjU = G.adj[u]
+    adjV= G.adj[v]
+    for i in adjU:
+        for v in adjV:
+            if i == v and i not in colab_en_commun: 
+                collab_commun.add(i)# i ou v cela revient au même car i==v
+    return collab_commun
+
+
 # dico_little_data = convert_txt_to_dict("./little_data.txt")
 dico_medium_data = convert_txt_to_dict("./medium_data.txt")
 # dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
-=======
 # dico_little_data = convert_txt_to_dict("./little_data.txt")
 dico_medium_data = convert_txt_to_dict("./medium_data.txt")
 dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
->>>>>>> charger_fichier_json.py
 
 def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
     g = nx.DiGraph()
@@ -128,19 +142,15 @@ def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
                     g.add_node(acteur2)
                     acteurs_vue.add(acteur2)
                 g.add_edge(acteur1, acteur2, length=10)
-<<<<<<< charger_fichier_json.py
     pos = nx.spring_layout(g, k=0.3)
     nx.draw(g, with_labels=True, font_size=2, pos=pos)
     plt.savefig("graph.svg", format="svg")
-=======
     #nx.draw(g, with_labels=True)
->>>>>>> charger_fichier_json.py
     return g
 
 
 #temps d'exec
 debut = time.time()  # tps debut
-<<<<<<< charger_fichier_json.py
 graphe = creation_graphe(dico_medium_data)
 fin = time.time()  # tps fin
 # debut exec
@@ -291,7 +301,6 @@ print(collaborateurs_proches(graphe, "Herbert Grönemeyer",1))
 print(distance_acteurs(graphe,"Herbert Grönemeyer","Uwe Ochsenknecht", 0))
 # noeud_proximite = nx.closeness_centrality(graphe)
 # noeud_central = max(noeud_proximite, key=noeud_proximite.get) 
-=======
 #graphe = creation_graphe(dico_medium_data)
 fin = time.time()  # tps fin
 # debut exec
@@ -324,6 +333,5 @@ def distance_maximale_entre_acteurs(Gc):
     distance_max = max(distances)
     return distance_max
 #print(distance_maximale_entre_acteurs(graphe))
->>>>>>> charger_fichier_json.py
 
 # %%
