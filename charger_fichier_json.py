@@ -189,20 +189,16 @@ def liste_acteur_a_distance_k(G, k): # acteur a distance strictement k
                 dico_acteur[acteur] = a-b
     return dico_acteur
 
-# print(liste_acteur_a_distance_k(graphe, 1))
+print(liste_acteur_a_distance_k(graphe, 2))
 
-# de manière récursive
-def distance_acteurs_recursif(G, u, v, k):
+def est_a_distance_k(G, u, v, k):
+    if u == v:
+        return True
+    if k == 0:
+        return False
     collaborateurs = collaborateurs_proches(G, u, k)
-    if u in G.nodes:
-        if v in collaborateurs:
-            return k
-        else:
-            k += 1
-            for collaborateur in collaborateurs:
-                collaborateurs = distance_acteurs_recursif(G, collaborateur, v, k)
-            return k-1
-    return k-1
+    return v in collaborateurs
+print(est_a_distance_k(graphe,"Donald Sutherland", "Brion James", 2))
 
 # print(collaborateurs_proches("Blazing Saddles", 1))
 # de manière itérative
@@ -223,7 +219,7 @@ def distance_acteurs_iterative(G,u,v):
         collabs = collaborateurs_proches(G,u,distance)
     return distance-1
 
-print(distance_acteurs_iterative(graphe,"Patricia Tallman", "Angela Featherstone"))
+print(distance_acteurs_iterative(graphe,"Donald Sutherland", "Brion James"))
 
 
 
@@ -242,7 +238,7 @@ def distance(G, u, v):
                 nouveau_chemin.append(voisin)  # ajoute le voisin au chemin
                 file.append(nouveau_chemin)  # ajoute le nouveau chemin à la file d'attente
                 if voisin == v:
-                    return len(nouveau_chemin)-1
+                    return len(nouveau_chemin)
                 if len(file) > len(G.nodes):
                     return 0  # dans le cas ou il n'y'a pas de relations entre les 2 acteurs, on ne retourne pas None pour la condition distance > val de la fonction eloignement_max(G)
         visite.append(noeud_courant)  # le noeud courant est compté comme visité
