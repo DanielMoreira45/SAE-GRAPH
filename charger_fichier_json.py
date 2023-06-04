@@ -100,7 +100,6 @@ def colab_en_commun(dico, acteur1, acteur2):
     for actor_sus in dico_verif_ancien_result:
          if len(dico_verif_ancien_result[actor_sus]) == 2:
             res.add(actor_sus)
-    print(res)
     return res
 
 
@@ -124,7 +123,6 @@ def colab_en_commun(G, u, v):
 dico_medium_data = convert_txt_to_dict("./medium_data.txt")
 # dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
 # dico_little_data = convert_txt_to_dict("./little_data.txt")
-dico_medium_data = convert_txt_to_dict("./medium_data.txt")
 dico_medium_plus_data = convert_txt_to_dict("./medium_plus_data.txt")
 
 def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
@@ -147,8 +145,6 @@ def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
     plt.savefig("graph.svg", format="svg")
     #nx.draw(g, with_labels=True)
     return g
-
-
 #temps d'exec
 debut = time.time()  # tps debut
 graphe = creation_graphe(dico_medium_data)
@@ -180,6 +176,21 @@ def collaborateurs_proches(G,u,k): # parcours en largeur
         collaborateurs = collaborateurs.union(collaborateurs_directs)
     return collaborateurs
 
+print(collaborateurs_proches(graphe, "Núria Espert", 0))
+
+def liste_acteur_a_distance_k(G, k): # acteur a distance strictement k
+    dico_acteur = dict()
+    for acteur in G.nodes:
+        if acteur not in dico_acteur:
+            print(k)
+            a = collaborateurs_proches(G, acteur, k)
+            b = collaborateurs_proches(G, acteur, k-1)
+            if a != b:
+                dico_acteur[acteur] = a-b
+    return dico_acteur
+
+# print(liste_acteur_a_distance_k(graphe, 1))
+
 # de manière récursive
 def distance_acteurs_recursif(G, u, v, k):
     collaborateurs = collaborateurs_proches(G, u, k)
@@ -190,13 +201,13 @@ def distance_acteurs_recursif(G, u, v, k):
             k += 1
             for collaborateur in collaborateurs:
                 collaborateurs = distance_acteurs_recursif(G, collaborateur, v, k)
-            return k
-    return k
+            return k-1
+    return k-1
 
-
+# print(collaborateurs_proches("Blazing Saddles", 1))
 # de manière itérative
 def distance_acteurs_iterative(G,u,v):
-    distance = 1
+    distance = 0
     trouve = False
     if u not in G.nodes or v not in G.nodes:
         return None
@@ -210,7 +221,11 @@ def distance_acteurs_iterative(G,u,v):
                 deja_vu.append(acteur)
         distance += 1
         collabs = collaborateurs_proches(G,u,distance)
-    return distance
+    return distance-1
+
+print(distance_acteurs_iterative(graphe,"Patricia Tallman", "Angela Featherstone"))
+
+
 
 def distance(G, u, v):
     if u not in G.nodes or v not in G.nodes:
@@ -227,28 +242,12 @@ def distance(G, u, v):
                 nouveau_chemin.append(voisin)  # ajoute le voisin au chemin
                 file.append(nouveau_chemin)  # ajoute le nouveau chemin à la file d'attente
                 if voisin == v:
-                    return len(nouveau_chemin)
-                if len(file) > G.number_of_nodes():
+                    return len(nouveau_chemin)-1
+                if len(file) > len(G.nodes):
                     return 0  # dans le cas ou il n'y'a pas de relations entre les 2 acteurs, on ne retourne pas None pour la condition distance > val de la fonction eloignement_max(G)
         visite.append(noeud_courant)  # le noeud courant est compté comme visité
 
-
-def eloignement_max(G):
-    max = 0
-    val = None
-    for acteur1 in G.nodes:
-        for acteur2 in G.nodes:
-            if acteur1!= acteur2:
-                distance = distance(G, acteur1, acteur2)
-                if val is None or distance > val:
-                    max = distance
-    return max
-
-# print(eloignement_max(graphe))
-
-#         
-# print(len(collaborateurs_proches(graphe, "Burt Ward", 1)))
-# print(len(collaborateurs_proches(graphe, "Burt Ward", 5)))
+print(distance(graphe,"Patricia Tallman", "Angela Featherstone" ))
 
 # noeud_proximite = nx.closeness_centrality(graphe)
 # noeud_central = max(noeud_proximite, key=noeud_proximite.get) 
@@ -258,17 +257,30 @@ fin = time.time()  # tps fin
 #print(fin - debut)
 
 
+# calcul de centralité en utilisant le principe de proximité 
+
 def calculer_centralite_acteur(Gc, acteur):
     centralite = nx.closeness_centrality(Gc, u=acteur)
     return centralite
-# print(calculer_centralite_acteur(graphe,"Tommy Lee Jones" ))
 
 def trouver_acteur_plus_central(G):
     noeud_proximite = nx.closeness_centrality(G)
     noeud_central = max(noeud_proximite, key=noeud_proximite.get)
     return noeud_central
-# print(trouver_acteur_plus_central(graphe))
 
+
+
+def trouver_acteur_plus_central_dico(G,dico,acteur):
+    if acteur in dico.keys():
+        return dico[acteur]
+    cpt = 0
+    for acteur2 in G.nodes():
+        if acteur != acteur2:
+            distance = distance_acteurs_iterative(G,acteur,acteur2)
+            cpt += distance
+    return cpt
+
+# en utilisant la librairie networkx
 def distance_maximale_entre_acteurs(Gc):
     distances = []
     for acteur1 in Gc.nodes():
@@ -282,6 +294,28 @@ def distance_maximale_entre_acteurs(Gc):
                     distances.append(0)  # Distance 0 pour représenter une distance infinie
     distance_max = max(distances)
     return distance_max
+
+
+def eloignement_max(G):
+    ens = set()
+    dis = 0
+    for acteur1 in G.nodes:
+        for acteur2 in G.nodes:
+                if acteur2 != acteur1:
+                    dis = distance(G,acteur1,acteur2)
+                    if dis is not None:
+                        ens.add(dis)
+    max_distance = max(ens)
+    return max_distance
+
+# print(eloignement_max(graphe))
+
+# print(collaborateurs_proches(graphe,"Blazing Saddles" ,2))
+
+
+# print(calculer_centralite_acteur(graphe,"Nova Pilbeam" ))
+# print(trouver_acteur_plus_central(graphe))
 #print(distance_maximale_entre_acteurs(graphe))
 
 # %%
+
