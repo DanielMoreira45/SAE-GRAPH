@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import json
+import time
 """
 Code diffusé aux étudiants de BUT1 dans le cadre de la SAE 2.02: Exploration algorithmique d'un problème.
 
@@ -30,3 +32,6 @@ def collaborateurs_proches(G,u,k): # parcours en largeur
                     collaborateurs_directs.add(voisin)
         collaborateurs = collaborateurs.union(collaborateurs_directs)
     return collaborateurs
+
+import json
+import networkx as nx

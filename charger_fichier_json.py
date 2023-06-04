@@ -142,9 +142,9 @@ def creation_graphe(dico): # complexité quadratique (à améliorer si possible)
                 g.add_edge(acteur1, acteur2, length=10)
     pos = nx.spring_layout(g, k=0.3)
     nx.draw(g, with_labels=True, font_size=2, pos=pos)
-    plt.savefig("graph.svg", format="svg")
-    #nx.draw(g, with_labels=True)
     return g
+
+
 #temps d'exec
 debut = time.time()  # tps debut
 graphe = creation_graphe(dico_medium_data)
