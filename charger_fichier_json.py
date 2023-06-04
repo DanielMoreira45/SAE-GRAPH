@@ -178,15 +178,22 @@ def collaborateurs_proches(G,u,k): # parcours en largeur
 
 print(collaborateurs_proches(graphe, "Núria Espert", 0))
 
-def liste_acteur_a_distance_k(G, k): # acteur a distance strictement k
+def liste_acteur_a_distance_k(G, k):
+    """
+    Renvoie un dictionnaire contenant les acteurs à une distance strictement k dans le graphe G.
+    Args:
+        G (networkx.classes.digraph.DiGraph): Le graphe représentants les acteurs.
+        k (int): La distance.
+    Returns:
+        dict: Un dictionnaire ayant l'acteur comme clé qui à comme valeur l'ensembles de ses collaborateurs ou collaboarteurs de collaborateurs à une distance k.
+    """
     dico_acteur = dict()
     for acteur in G.nodes:
         if acteur not in dico_acteur:
-            print(k)
             a = collaborateurs_proches(G, acteur, k)
             b = collaborateurs_proches(G, acteur, k-1)
             if a != b:
-                dico_acteur[acteur] = a-b
+                dico_acteur[acteur] = a - b
     return dico_acteur
 
 print(liste_acteur_a_distance_k(graphe, 2))
@@ -198,6 +205,8 @@ def est_a_distance_k(G, u, v, k):
         return False
     collaborateurs = collaborateurs_proches(G, u, k)
     return v in collaborateurs
+
+
 print(est_a_distance_k(graphe,"Donald Sutherland", "Brion James", 2))
 
 # print(collaborateurs_proches("Blazing Saddles", 1))
